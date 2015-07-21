@@ -5,6 +5,7 @@ import github3, inquirer, requests
 import fileinput, sys, json
 from optparse import OptionParser
 from urlparse import urlparse
+from time import sleep
 
 def is_url(url):
     return '://' in url
@@ -97,34 +98,34 @@ commit = origin.commit('master')
 ref = origin.create_ref('refs/heads/%s' % name, commit.sha)
 
 files = {
-    'info.ini': """
-    author = "%s"
-    github = "%s"
-    homepage = "%s"
-    description = "%s"
-    mainfile = "%s"
-    """ % (author, repo, homepage, desc, mainfile),
-    'update.json': """
-    {
-        "packageManager": %s,
-        "name": %s,
-        "repo": %s,
-        "files": {
-            "basePath": %s,
-            "include": %s,
-            "exclude": %s
-        }
+    'info.ini': """author = "%s"
+github = "%s"
+homepage = "%s"
+description = "%s"
+mainfile = "%s"
+""" % (author, repo, homepage, desc, mainfile),
+    'update.json': """{
+    "packageManager": %s,
+    "name": %s,
+    "repo": %s,
+    "files": {
+        "basePath": %s,
+        "include": %s,
+        "exclude": %s
     }
-    """ % tuple(map(json.dumps, [pkg, name, update_repo, basePath, include, exclude]))
+}""" % tuple(map(json.dumps, [pkg, name, update_repo, basePath, include, exclude]))
 }
 
 for fname,content in files.iteritems():
     origin.create_file('files/%s/%s' % (name, fname), 'Create %s for %s' % (fname, name), bytes(content), name)
+    # Workaround github api glitch where we're too damn quick
+    sleep(0.1)
+
 
 pr = upstream.create_pull('Create %s' % name,
-        'master',
-        '%s:%s' % (me.login, name),
-        'Created via https://github.com/megawac/cdn-it'
+    'master',
+    '%s:%s' % (me.login, name),
+    'Created via https://github.com/megawac/cdn-it'
 )
 
 print 'Created pull request %s' % pr.html_url
