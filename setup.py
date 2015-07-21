@@ -1,19 +1,19 @@
 from distutils.core import setup
 
 setup(
-  name = 'cdn_it',
+  name = 'cdn-it',
   packages = ['cdn_it'],
   version = '1.0.0',
   description = 'Quickly create an auto updating jsDelivr project',
   author = 'Graeme Yeates',
   author_email = 'megawac@gmail.com',
   url = 'https://github.com/megawac/cdn-it',
-  download_url = 'https://github.com/megawac/cdn-it/tarball/v1.0.1',
+  download_url = 'https://github.com/megawac/cdn-it/tarball/v1.0.3',
   keywords = ['cdn', 'jsdelivr'], # arbitrary keywords
   classifiers = [],
   entry_points={
-    'cdn_it': [
-        'cdn_it = cdn_it:main'
+    'console_scripts': [
+        'cdn-it=cdn_it:main'
     ]
   }
 )
