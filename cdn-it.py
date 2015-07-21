@@ -4,6 +4,7 @@ import github3, inquirer, requests
 
 import fileinput, sys, json
 from optparse import OptionParser
+from urlparse import urlparse
 
 def is_url(url):
     return '://' in url
@@ -16,10 +17,13 @@ parser.add_option('-t', '--token', dest='token',
 
 (options, args) = parser.parse_args()
 
-# if options.token is None:
-#     raise Exception('Github API token required')
-# elif len(args) < 1:
-#     raise Exception('Must provide a file (cdn-it package.json)')
+if options.token is None:
+    raise Exception('Github API token required')
+elif len(args) < 1:
+    raise Exception('Must provide a file (cdn-it package.json)')
+
+gh = github3.login(options.token)
+me = gh.me()
 
 if not is_url(args[0]):
     with open(args[0], 'r') as f:
@@ -61,7 +65,7 @@ author = answers['author']
 repo = answers['repo']
 
 def format_clude(clude):
-    return [x.strip() for x in clude.split(',')]
+    return filter(bool, [x.strip() for x in clude.split(',')])
 
 answers = inquirer.prompt([
     inquirer.Text('homepage', message="homepage",
@@ -69,7 +73,7 @@ answers = inquirer.prompt([
     ),
     inquirer.Text('mainfile', message="mainfile"),
     inquirer.List('pkg',
-        message="Update package manager",
+        message="Package manager for updates",
         choices=['github', 'npm', 'bower'],
     ),
     inquirer.Text('basePath', message="basePath", default='/'),
@@ -83,4 +87,38 @@ basePath = answers['basePath']
 include = format_clude(answers['include'])
 exclude = format_clude(answers['exclude'])
 
-# TODO push to github
+update_repo = filter(bool, urlparse(repo).path.rstrip('.git').split('/'))
+
+# Push it all up to github
+# upstream = gh.repository('jsdelivr', 'jsdelivr')
+# origin = upstream.create_fork()
+
+# commit = origin.commit('master')
+# ref = origin.create_ref('refs/heads/%s' % name, commit.sha)
+
+files = {
+    'info.ini': """
+    author = %s
+    github = %s
+    homepage = %s
+    description = %s
+    mainfile = %s
+    """ % (author, repo, homepage, desc, mainfile),
+    'update.json': """
+    {
+        "packageManager": %s,
+        "name": %s,
+        "repo": %s,
+        "files": {
+            "basePath": %s,
+            "include": %s,
+            "exclude": %s
+        }
+    }
+    """ % tuple(map(json.dumps, [pkg, name, update_repo, basePath, include, exclude]))
+}
+
+for fname,content in files.iteritems():
+    origin.create_file('files/%s/%s' % (name, fname), 'Create %s for %s' % (fname, name), content, name)
+
+upstream.create_pull('Create %s' % name, 'master', '%s/%s' % (me.login, name), 'Created via https://github.com/megawac/cdn-it')
