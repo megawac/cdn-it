@@ -16,7 +16,7 @@ $ pip install cdn-it
 $ cdn-it <url|file> --token <github token>
 ```
 
-![example](http://i.imgur.com/TpWRP5n.jpg)
+![example](./example.gif)
 
 
 Example pull request: https://github.com/jsdelivr/jsdelivr/pull/6024
