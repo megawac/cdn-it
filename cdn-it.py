@@ -22,7 +22,7 @@ if options.token is None:
 elif len(args) < 1:
     raise Exception('Must provide a file (cdn-it package.json)')
 
-gh = github3.login(options.token)
+gh = github3.login(token=options.token)
 me = gh.me()
 
 if not is_url(args[0]):
@@ -61,8 +61,8 @@ answers = inquirer.prompt([
     inquirer.Text('author', message="Author", default=author),
     inquirer.Text('repo', message="Repository", default=repo)
 ])
-author = answers['author']
-repo = answers['repo']
+author = answers['author'].strip()
+repo = answers['repo'].strip()
 
 def format_clude(clude):
     return filter(bool, [x.strip() for x in clude.split(',')])
@@ -80,29 +80,29 @@ answers = inquirer.prompt([
     inquirer.Text('include', message="include", default='**/*'),
     inquirer.Text('exclude', message="exclude")
 ])
-homepage = answers['homepage']
-mainfile = answers['mainfile']
-pkg = answers['pkg']
-basePath = answers['basePath']
+homepage = answers['homepage'].strip()
+mainfile = answers['mainfile'].strip()
+pkg = answers['pkg'].strip()
+basePath = answers['basePath'].strip()
 include = format_clude(answers['include'])
 exclude = format_clude(answers['exclude'])
 
 update_repo = filter(bool, urlparse(repo).path.rstrip('.git').split('/'))
 
 # Push it all up to github
-# upstream = gh.repository('jsdelivr', 'jsdelivr')
-# origin = upstream.create_fork()
+upstream = gh.repository('jsdelivr', 'jsdelivr')
+origin = upstream.create_fork()
 
-# commit = origin.commit('master')
-# ref = origin.create_ref('refs/heads/%s' % name, commit.sha)
+commit = origin.commit('master')
+ref = origin.create_ref('refs/heads/%s' % name, commit.sha)
 
 files = {
     'info.ini': """
-    author = %s
-    github = %s
-    homepage = %s
-    description = %s
-    mainfile = %s
+    author = "%s"
+    github = "%s"
+    homepage = "%s"
+    description = "%s"
+    mainfile = "%s"
     """ % (author, repo, homepage, desc, mainfile),
     'update.json': """
     {
@@ -119,6 +119,12 @@ files = {
 }
 
 for fname,content in files.iteritems():
-    origin.create_file('files/%s/%s' % (name, fname), 'Create %s for %s' % (fname, name), content, name)
+    origin.create_file('files/%s/%s' % (name, fname), 'Create %s for %s' % (fname, name), bytes(content), name)
 
-upstream.create_pull('Create %s' % name, 'master', '%s/%s' % (me.login, name), 'Created via https://github.com/megawac/cdn-it')
+pr = upstream.create_pull('Create %s' % name,
+        'master',
+        '%s:%s' % (me.login, name),
+        'Created via https://github.com/megawac/cdn-it'
+)
+
+print 'Created pull request %s' % pr.html_url

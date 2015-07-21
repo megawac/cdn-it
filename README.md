@@ -17,3 +17,6 @@ $ cdn-it <url|file> --token <github token>
 ```
 
 ![example](http://i.imgur.com/TpWRP5n.jpg)
+
+
+Example pull request: https://github.com/jsdelivr/jsdelivr/pull/6024
