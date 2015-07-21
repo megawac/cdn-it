@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
   name = 'cdn-it',
   packages = ['cdn_it'],
-  version = '1.0.0',
+  version = '1.0.3',
   description = 'Quickly create an auto updating jsDelivr project',
   author = 'Graeme Yeates',
   author_email = 'megawac@gmail.com',

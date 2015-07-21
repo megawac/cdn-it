@@ -89,7 +89,7 @@ def main():
     include = format_clude(answers['include'])
     exclude = format_clude(answers['exclude'])
 
-    update_repo = filter(bool, urlparse(repo).path.rstrip('.git').split('/'))
+    update_repo = '/'.join(filter(bool, urlparse(repo).path.rstrip('.git').split('/')))
 
     # Push it all up to github
     upstream = gh.repository('jsdelivr', 'jsdelivr')
