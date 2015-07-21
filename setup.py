@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-  name = 'cdn-it',
+  name = 'cdn_it',
   packages = ['cdn_it'],
   version = '1.0.0',
   description = 'Quickly create an auto updating jsDelivr project',
@@ -13,7 +13,7 @@ setup(
   classifiers = [],
   entry_points={
     'cdn_it': [
-        'cdn-it = cdn_it:main'
+        'cdn_it = cdn_it:main'
     ]
   }
 )
