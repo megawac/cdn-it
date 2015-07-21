@@ -100,21 +100,21 @@ def main():
 
     files = {
         'info.ini': """author = "%s"
-    github = "%s"
-    homepage = "%s"
-    description = "%s"
-    mainfile = "%s"
-    """ % (author, repo, homepage, desc, mainfile),
-        'update.json': """{
-        "packageManager": %s,
-        "name": %s,
-        "repo": %s,
-        "files": {
-            "basePath": %s,
-            "include": %s,
-            "exclude": %s
-        }
-    }""" % tuple(map(json.dumps, [pkg, name, update_repo, basePath, include, exclude]))
+github = "%s"
+homepage = "%s"
+description = "%s"
+mainfile = "%s"
+""" % (author, repo, homepage, desc, mainfile),
+    'update.json': """{
+    "packageManager": %s,
+    "name": %s,
+    "repo": %s,
+    "files": {
+        "basePath": %s,
+        "include": %s,
+        "exclude": %s
+    }
+}""" % tuple(map(json.dumps, [pkg, name, update_repo, basePath, include, exclude]))
     }
 
     for fname,content in files.iteritems():
