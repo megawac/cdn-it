@@ -58,6 +58,7 @@ def main():
         repo = config['repository']
         if type(repo) == dict:
             repo = repo['url']
+    else: repo = ''
 
     answers = inquirer.prompt([
         inquirer.Text('author', message="Author", default=author),
