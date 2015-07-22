@@ -19,4 +19,4 @@ $ cdn-it <url|file> --token <github token>
 ![example](./example.gif)
 
 
-Example pull request: https://github.com/jsdelivr/jsdelivr/pull/6024
+Example pull request: https://github.com/jsdelivr/jsdelivr/pull/6055
