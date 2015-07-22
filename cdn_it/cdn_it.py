@@ -2,13 +2,13 @@
 
 import github3, inquirer, requests
 
-import fileinput, sys, json
+import fileinput, sys, json, re
 from optparse import OptionParser
 from urlparse import urlparse
 from time import sleep
 
 def is_url(url):
-    return '://' in url
+    return '://' in url and ' ' not in url
 
 def main():
     parser = OptionParser()
